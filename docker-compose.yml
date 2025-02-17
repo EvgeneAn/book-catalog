@@ -1,0 +1,23 @@
+services:
+  book_catalog_db:
+    image: postgres:17-alpine
+    container_name: book_catalog_db
+    environment:
+      POSTGRES_DB: book_catalog
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./.data/postgresql-data:/var/lib/postgresql/data
+
+  book_catalog:
+    image: book_catalog_app
+    container_name: book_catalog_app
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
+    ports:
+      - "8080:80"
+    depends_on:
+      - book_catalog_db
