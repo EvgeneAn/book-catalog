@@ -1,0 +1,23 @@
+[project]
+name = "book-catalog"
+version = "0.1.0"
+description = "This is a book catalog project"
+authors = [{ name = "Your Name", email = "you@example.com" }]
+readme = "README.md"
+requires-python = ">=3.13"
+
+dependencies = [
+    "fastapi[standard] (>=0.115.8,<0.116.0)",
+    "sqlalchemy (>=2.0.38,<3.0.0)",
+    "alembic (>=1.14.1,<2.0.0)",
+]
+
+[tool.poetry.group.test.dependencies]
+pytest = "^8.3.4"
+
+[tool.poetry]
+package-mode = false
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
