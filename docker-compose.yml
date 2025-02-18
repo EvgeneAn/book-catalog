@@ -3,15 +3,23 @@ services:
     image: postgres:17-alpine
     container_name: book_catalog_db
     environment:
-      POSTGRES_DB: book_catalog
+      POSTGRES_DB: book_catalog_db
       POSTGRES_PASSWORD: postgres
       POSTGRES_USER: postgres
     ports:
       - "5432:5432"
     volumes:
       - ./.data/postgresql-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    networks:
+      - backend
 
-  book_catalog:
+  book_catalog_app:
     image: book_catalog_app
     container_name: book_catalog_app
     build:
@@ -20,4 +28,14 @@ services:
     ports:
       - "8080:80"
     depends_on:
-      - book_catalog_db
+      book_catalog_db:
+        condition: service_healthy
+    post_start:
+      - command: poetry run alembic upgrade head
+    networks:
+      - backend
+
+networks:
+  backend:
+    driver: bridge
+    name: backend
